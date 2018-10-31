@@ -129,13 +129,13 @@ task usercontrol()
     // Arm Control
    	if(vexRT[Btn7U] == 1)
     {
-      motor[leftNine] = -127;
-      motor[rightNine] = -127;
+      motor[leftNine] = 64;
+      motor[rightNine] = 64;
     }
     else if(vexRT[Btn7D] == 1)
     {
-      motor[leftNine] = 127;
-      motor[rightNine] = 127;
+      motor[leftNine] = -64;
+      motor[rightNine] = -64;
     }
     else
     {

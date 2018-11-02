@@ -123,8 +123,8 @@ task usercontrol()
 	while (1 == 1)
   {
     // Driving Motor Control
-    motor[leftMotor] = (int)(vexRT[Ch3] / 2);
-    motor[rightMotor] = (int)(vexRT[Ch2] / 2);
+    motor[leftMotor] = (int)(vexRT[Ch3Xmtr2] / 2);
+    motor[rightMotor] = (int)(vexRT[Ch2Xmtr2] / 2);
 
     // Arm Control
    	if(vexRT[Btn7U] == 1)

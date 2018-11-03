@@ -1,6 +1,7 @@
-#pragma config(Motor,  port2,           leftMotor,     tmotorServoContinuousRotation, openLoop, reversed)
+#pragma config(Motor,  port1,           flipper,       tmotorVex393_HBridge, openLoop)
+#pragma config(Motor,  port2,           leftMotor,     tmotorServoContinuousRotation, openLoop)
 #pragma config(Motor,  port3,           leftNine,      tmotorServoContinuousRotation, openLoop, reversed)
-#pragma config(Motor,  port4,           rightMotor,    tmotorServoContinuousRotation, openLoop)
+#pragma config(Motor,  port4,           rightMotor,    tmotorServoContinuousRotation, openLoop, reversed)
 #pragma config(Motor,  port5,           rightNine,     tmotorServoContinuousRotation, openLoop)
 #pragma config(Motor,  port6,           spinning1,     tmotorServoContinuousRotation, openLoop, reversed)
 #pragma config(Motor,  port7,           spinning2,     tmotorServoContinuousRotation, openLoop)
@@ -108,7 +109,7 @@ task autonomous()
 
 task usercontrol()
 {
-
+	int lift;
   // User control code here, inside the loop
 			nMotorPIDSpeedCtrl[leftMotor] = RegIdle;
 			nMotorPIDSpeedCtrl[leftNine] = RegIdle;
@@ -123,11 +124,11 @@ task usercontrol()
 	while (1 == 1)
   {
     // Driving Motor Control
-    motor[leftMotor] = (int)(vexRT[Ch3Xmtr2] / 2);
-    motor[rightMotor] = (int)(vexRT[Ch2Xmtr2] / 2);
+    motor[leftMotor] = (int)(vexRT[Ch3Xmtr2]);
+    motor[rightMotor] = (int)(vexRT[Ch2Xmtr2]);
 
     // Arm Control
-   	if(vexRT[Btn7U] == 1)
+   /*	if(vexRT[Btn7U] == 1)
     {
       motor[leftNine] = 64;
       motor[rightNine] = 64;
@@ -141,7 +142,14 @@ task usercontrol()
     {
       motor[leftNine] = 12;
       motor[rightNine] = 12;
+		}*/
+		lift = vexRT[Ch2] + 20;
+		if(lift > 127)
+		{
+			lift = 127;
 		}
+		motor[leftNine] = lift;
+		motor[rightNine] = lift;
 
 		if(vexRT[Btn5U] == 1)
     {
@@ -164,6 +172,18 @@ task usercontrol()
     else if(vexRT[Btn6D] == 1)
     {
     	motor[track] = 0;
+    }
+    if(vexRT[Btn8LXmtr2] == 1)
+    {
+    	motor[flipper] = -127;
+    }
+    else if(vexRT[Btn8DXmtr2] == 1)
+    {
+    	motor[flipper] = 127;
+    }
+    else
+    {
+    	motor[flipper] = 0;
     }
     if(vexRT[Btn8U] == 1)
     {

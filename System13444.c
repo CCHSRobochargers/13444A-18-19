@@ -1,5 +1,5 @@
 #pragma config(Sensor, dgtl11, auto1,          sensorDigitalIn)
-#pragma config(Sensor, dgtl12, autoselect,     sensorDigitalIn)
+#pragma config(Sensor, dgtl12, auto2,          sensorDigitalIn)
 #pragma config(Motor,  port2,           rightMotor,    tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port3,           rightM2,       tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port4,           leftNine,      tmotorVex393_MC29, openLoop, reversed)
@@ -131,7 +131,7 @@ task autonomous()
 		flag();
 	}
 
-	if(SensorValue (autoselect) == 0) //needs the jumper cable out of port 12
+	if(SensorValue (auto2) == 0) //needs the jumper cable out of port 12
 	{
 		cap();
 	}

@@ -1,3 +1,4 @@
+#pragma config(Sensor, dgtl11, auto1,          sensorDigitalIn)
 #pragma config(Sensor, dgtl12, autoselect,     sensorDigitalIn)
 #pragma config(Motor,  port2,           leftMotor,     tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           rightNine,     tmotorVex393_MC29, openLoop)
@@ -58,75 +59,75 @@ void pre_auton()
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
-
-static const float ticksPerInch = 0.95 * (627.2 / (4.0 * PI));
-//adjust to compensate for wheel slip
-static const float ticksPerRev = 1.11 * (ticksPerInch * 12.0 * PI);
-
-void move(float dist, int speed, bool hold)
-{
-	resetMotorEncoder(rightMotor);
-	resetMotorEncoder(leftMotor);
-
-	setMotorTarget(rightMotor, dist*ticksPerInch, speed, hold);
-	setMotorTarget(leftMotor, dist*ticksPerInch, speed, hold);
-
-	while (!getMotorTargetCompleted(rightMotor) && !getMotorTargetCompleted(leftMotor))
-		wait1Msec(10);
-}
-
-void spin(float rev, int speed, bool hold)
-{
-	resetMotorEncoder(rightMotor);
-	resetMotorEncoder(leftMotor);
-
-	setMotorTarget(rightMotor, rev*ticksPerRev, speed, hold);
-	setMotorTarget(leftMotor, -rev*ticksPerRev, speed, hold);
-
-	while (!getMotorTargetCompleted(rightMotor) && !getMotorTargetCompleted(leftMotor))
-		wait1Msec(10);
-}
-
-
-task autonomous()
-{
-	/*move(36, 127, false); // go forward to the cap
-	spin(0.25, 127, false); // knock the ball out from under the cap*/
-	if(SensorValue (autoselect) == 1) //neeeds the thingy out of port 12
+void cap(void)
 	{
 		motor(leftMotor) = 127;
 		motor(rightMotor) = 127;
 		motor(leftM2) = 127;
 		motor(rightM2) = 127;
 		delay(500);
+		// go forward somewhat
 		motor(leftMotor) = -127;
 		motor(rightMotor) = -127;
 		motor(leftM2) = -127;
 		motor(rightM2) = -127;
 		delay(300);
+		// back up somewhat to put the tines down
 		motor(leftMotor) = 127;
 		motor(rightMotor) = 127;
 		motor(leftM2) = 127;
 		motor(rightM2) = 127;
 		delay(1240);
+		// go forward to the cap
 		motor(leftMotor) = -100;
 		motor(rightMotor) = 100;
 		motor(leftM2) = -100;
 		motor(rightM2) = 100;
 		delay(1000);
+		// turn somewhat to move the ball out from under the cap
 		motor(leftMotor) = -100;
 		motor(rightMotor) = -100;
 		motor(leftM2) = -100;
 		motor(rightM2) = -100;
 		delay(1000);
+		// back up to stop touching the cap
 		motor(leftMotor) = 0;
 		motor(rightMotor) = 0;
 		motor(leftM2) = 0;
 		motor(rightM2) = 0;
+		// stop so the robot doesn't go crazy
 	}
-	else //needs the thingy in port 12
+void flag(void)
 	{
-	//second autonomous
+		motor(leftMotor) = -127;
+		motor(leftM2) = -127;
+		motor(rightMotor) = -127;
+		motor(rightM2) = -127;
+		delay(2500);
+		// go backwards to the low flag
+		motor(leftMotor) = 127;
+		motor(leftM2) = 127;
+		motor(rightMotor) = 127;
+		motor(rightM2) = 127;
+		delay(1000);
+		// come back to the starting square
+		motor(leftMotor) = 0;
+		motor(leftM2) = 0;
+		motor(rightMotor) = 0;
+		motor(rightM2) = 0;
+		// stop so the robot doesn't break anything
+	}
+
+task autonomous()
+{
+	if(SensorValue (auto1) == 0) //needs the jumper in port 11
+	{
+		flag();
+	}
+
+	if(SensorValue (autoselect) == 0) //needs the jumper cable out of port 12
+	{
+		cap();
 	}
 }
 
@@ -143,93 +144,93 @@ task autonomous()
 task usercontrol()
 {
 
-	int lift;
+//int lift;
 
-	while (1 == 1)
+while (1 == 1)
+{
+	// Driving Motor Control
+	motor[leftMotor] = vexRT[Ch3];
+	motor[leftM2] = vexRT[Ch3];
+	motor[rightMotor] = vexRT[Ch2];
+	motor[rightM2] = vexRT[Ch2];
+
+	if(vexRT[Btn7U] == 1)
 	{
-		// Driving Motor Control
-		motor[leftMotor] = vexRT[Ch3];
-		motor[leftM2] = vexRT[Ch3];
-		motor[rightMotor] = vexRT[Ch2];
-		motor[rightM2] = vexRT[Ch2];
+		motor[leftNine] = 70;
+		motor[rightNine] = 70;
+	}
+	else if(vexRT[Btn7D] == 1)
+	{
+		motor[leftNine] = -70;
+		motor[rightNine] = -70;
+	}
+	else
+	{
+		motor[leftNine] = 17;
+		motor[rightNine] = 17;
+	}
+	// this is our lift control
 
-		if(vexRT[Btn7U] == 1)
-		{
-			motor[leftNine] = 64;
-			motor[rightNine] = 64;
-		}
-		else if(vexRT[Btn7D] == 1)
-		{
-			motor[leftNine] = -64;
-			motor[rightNine] = -64;
-		}
-		else
-		{
-			motor[leftNine] = 12;
-			motor[rightNine] = 12;
-		}
-		// this is our lift control
+	/*lift = vexRT[Ch2] + 20;
+	if(lift > 127)
+	{
+	lift = 127;
+	}
+	motor[leftNine] = lift;
+	motor[rightNine] = lift;*/
 
-		/*lift = vexRT[Ch2] + 20;
-		if(lift > 127)
-		{
-		lift = 127;
-		}
-		motor[leftNine] = lift;
-		motor[rightNine] = lift;*/
+	/*if(vexRT[Btn5U] == 1)
+	{
+	motor[spinning1] = 127;
+	motor[spinning2] = 127;
+	motor[spinning3] = 127;
+	motor[spinning4] = 127;
+	}
+	else
+	{
+	motor[spinning1] = 0;
+	motor[spinning2] = 0;
+	motor[spinning3] = 0;
+	motor[spinning4] = 0;
+	}
+	// shooting mechanism control
 
-		/*if(vexRT[Btn5U] == 1)
-		{
-		motor[spinning1] = 127;
-		motor[spinning2] = 127;
-		motor[spinning3] = 127;
-		motor[spinning4] = 127;
-		}
-		else
-		{
-		motor[spinning1] = 0;
+	if(vexRT[Btn6U] == 1)
+	{
+	motor[track] = 127;
+	}
+	else if(vexRT[Btn6D] == 1)
+	{
+	motor[track] = 0;
+	}
+	// control for the belt that carries the balls up to the shooter
+	*/
+	if(vexRT[Btn8L] == 1)
+	{
+		motor[flipper] = 127;
+	}
+	else if(vexRT[Btn8D] == 1)
+	{
+		motor[flipper] = -127;
+	}
+	else
+	{
+		motor[flipper] = 0;
+	}
+	// cap flipper control*/
+
+	if(vexRT[Btn8U] == 1)
+	{
+		motor[leftMotor] = 0;
+		motor[leftNine] = 0;
+		motor[rightMotor] = 0;
+		motor[rightNine] = 0;
+		/*motor[spinning1] = 0;
 		motor[spinning2] = 0;
 		motor[spinning3] = 0;
 		motor[spinning4] = 0;
-		}
-		// shooting mechanism control
-
-		if(vexRT[Btn6U] == 1)
-		{
-		motor[track] = 127;
-		}
-		else if(vexRT[Btn6D] == 1)
-		{
-		motor[track] = 0;
-		}
-		// control for the belt that carries the balls up to the shooter
-		*/
-		if(vexRT[Btn8L] == 1)
-		{
-			motor[flipper] = 127;
-		}
-		else if(vexRT[Btn8D] == 1)
-		{
-			motor[flipper] = -127;
-		}
-		else
-		{
-			motor[flipper] = 0;
-		}
-		// cap flipper control*/
-
-		if(vexRT[Btn8U] == 1)
-		{
-			motor[leftMotor] = 0;
-			motor[leftNine] = 0;
-			motor[rightMotor] = 0;
-			motor[rightNine] = 0;
-			/*motor[spinning1] = 0;
-			motor[spinning2] = 0;
-			motor[spinning3] = 0;
-			motor[spinning4] = 0;
-			motor[track] = 0;*/
-		}
-		delay(10);
+		motor[track] = 0;*/
 	}
+	delay(10);
+}
 }

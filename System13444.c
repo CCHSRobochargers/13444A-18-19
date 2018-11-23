@@ -1,10 +1,12 @@
 #pragma config(Sensor, dgtl10, autored,        sensorDigitalIn)
 #pragma config(Sensor, dgtl11, autoblue,       sensorDigitalIn)
 #pragma config(Sensor, dgtl12, autocap,        sensorDigitalIn)
+#pragma config(Motor,  port1,           lifter,        tmotorVex393_HBridge, openLoop)
 #pragma config(Motor,  port2,           rightMotor,    tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port3,           rightM2,       tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port4,           leftNine,      tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port5,           flipper,       tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port6,            ,             tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port7,           rightNine,     tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port8,           leftM2,        tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port9,           leftMotor,     tmotorVex393_MC29, openLoop, reversed)
@@ -49,6 +51,11 @@ void pre_auton()
 
 	// All activities that occur before the competition starts
 	// Example: clearing encoders, setting servo positions, ...
+	slaveMotor(leftM2, leftMotor);
+	slaveMotor(rightM2, rightMotor);
+
+	motor[leftMotor] = 0;
+	motor[rightMotor] = 0;
 }
 
 /*---------------------------------------------------------------------------*/
@@ -64,78 +71,61 @@ void cap(void)
 {
 	motor(leftMotor) = 127;
 	motor(rightMotor) = 127;
-	motor(leftM2) = 127;
-	motor(rightM2) = 127;
 	delay(500);
 	// go forward somewhat
 	motor(leftMotor) = -75;
 	motor(rightMotor) = -75;
-	motor(leftM2) = -75;
-	motor(rightM2) = -75;
 	delay(300);
 	// back up somewhat to put the tines down
 	motor(leftMotor) = 100;
 	motor(rightMotor) = 100;
-	motor(leftM2) = 100;
-	motor(rightM2) = 100;
 	delay(1100);
 	// go forward to the cap
-	motor(leftMotor) = -100;
-	motor(rightMotor) = 100;
-	motor(leftM2) = -100;
-	motor(rightM2) = 100;
-	delay(650);
+	motor(leftMotor) = -80;
+	motor(rightMotor) = 80;
+	delay(450);
 	// turn somewhat to move the ball out from under the cap
+	motor(leftMotor) = 50;
+	motor(rightMotor) = -50;
+	delay(450);
+	// turn back to face the other cap
 	motor(leftMotor) = -100;
 	motor(rightMotor) = -100;
-	motor(leftM2) = -100;
-	motor(rightM2) = -100;
 	delay(500);
 	// back up to stop touching the cap
+	/*motor(flipper) = 127;
+	delay(1000);*/
+	// flip the other cap
 	motor(leftMotor) = 0;
 	motor(rightMotor) = 0;
-	motor(leftM2) = 0;
-	motor(rightM2) = 0;
 	// stop so the robot doesn't go crazy
 }
 void blue_flag(void)
 {
 	motor(leftMotor) = -127;
-	motor(leftM2) = -127;
 	motor(rightMotor) = -127;
-	motor(rightM2) = -127;
 	delay(2500);
 	// drive backwards to the low flag
 	motor(leftMotor) = 0;
-	motor(leftM2) = 0;
 	motor(rightMotor) = 0;
-	motor(rightM2) = 0;
 	// stop so the robot doesn't break anything
 }
 void red_flag(void)
 {
 	motor(leftMotor) = -127;
-	motor(leftM2) = -127;
 	motor(rightMotor) = -127;
-	motor(rightM2) = -127;
 	delay(2500);
 	// go backwards to the low flag
 	motor(leftMotor) = 127;
-	motor(leftM2) = 127;
 	motor(rightMotor) = 127;
-	motor(rightM2) = 127;
 	delay(1000);
 	// go forward some
 	motor(leftMotor) = 127;
-	motor(leftM2) = 127;
 	motor(rightMotor) = -127;
-	motor(rightM2) = -127;
 	delay(2000);
 	// turn to face the cap
 	motor(leftMotor) = 0;
-	motor(leftM2) = 0;
 	motor(rightMotor) = 0;
-	motor(rightM2) = 0;
 	// stop so the robot doesn't break anything
 }
 
@@ -176,16 +166,12 @@ task usercontrol()
 		if(!halfspeed)// halfspeed is false
 		{
 			motor[leftMotor] = vexRT[Ch3];
-			motor[leftM2] = vexRT[Ch3];
 			motor[rightMotor] = vexRT[Ch2];
-			motor[rightM2] = vexRT[Ch2];
 		}
 		if(halfspeed)//halfspeed is true
 		{
 			motor[leftMotor] = vexRT[Ch3] / 2;
-			motor[leftM2] = vexRT[Ch3] / 2;
 			motor[rightMotor] = vexRT[Ch2] / 2;
-			motor[rightM2] = vexRT[Ch2] / 2;
 		}
 		if(vexRT[Btn6U] == 1)// push to turn halfspeed off (falsify)
 		{
@@ -223,5 +209,17 @@ task usercontrol()
 			motor[flipper] = 0;
 		}
 		// control for the cap flipper
+		if(vexRT[Btn7R] == 1)
+		{
+			motor[lifter] = 127;
+		}
+		else if(vexRT[Btn7L] == 1)
+		{
+			motor[lifter] = -127;
+		}
+		else
+		{
+			motor[lifter] = 0;
+		}
 	}
 }

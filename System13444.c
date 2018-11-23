@@ -105,32 +105,8 @@ void blue_flag(void)
 	motor(rightMotor) = -127;
 	motor(rightM2) = -127;
 	delay(2500);
-	// go backwards to the low flag
-	/*motor(leftMotor) = 127;
-	motor(leftM2) = 127;
-	motor(rightMotor) = 127;
-	motor(rightM2) = 127;
-	delay(1000);*/
-	// go forward some
-	/*motor(leftMotor) = -127;
-	motor(leftM2) = -127;
-	motor(rightMotor) = 127;
-	motor(rightM2) = 127;
-	delay(2000);*/
-	// turn to face the cap
-	/*motor(leftMotor) = 127;
-	motor(leftM2) = 127;
-	motor(rightMotor) = 127;
-	motor(rightM2) = 127;
-	delay(2500);
-	// drive forward to the cap
-	motor(leftMotor) = -127;
-	motor(leftM2) = -127;
-	motor(rightMotor) = 127;
-	motor(rightM2) = 127;
-	delay(1000);
-	// turn to score the cap
-	*/motor(leftMotor) = 0;
+	// drive backwards to the low flag
+	motor(leftMotor) = 0;
 	motor(leftM2) = 0;
 	motor(rightMotor) = 0;
 	motor(rightM2) = 0;
@@ -156,19 +132,7 @@ void red_flag(void)
 	motor(rightM2) = -127;
 	delay(2000);
 	// turn to face the cap
-	/*motor(leftMotor) = 127;
-	motor(leftM2) = 127;
-	motor(rightMotor) = 127;
-	motor(rightM2) = 127;
-	delay(2500);
-	// drive forward to the cap
-	motor(leftMotor) = 127;
-	motor(leftM2) = 127;
-	motor(rightMotor) = -127;
-	motor(rightM2) = -127;
-	delay(1000);
-	// turn to score the cap
-	*/motor(leftMotor) = 0;
+	motor(leftMotor) = 0;
 	motor(leftM2) = 0;
 	motor(rightMotor) = 0;
 	motor(rightM2) = 0;
@@ -243,18 +207,21 @@ task usercontrol()
 			motor[leftNine] = -100;
 			motor[rightNine] = -100;
 		}
+		else
+		{
+			motor(leftNine) = 17;
+			motor(rightNine)= 17;
+		}
 		// control for the lift
+
 		if(vexRT[Btn8U] == 1)
 		{
 			motor[flipper] = 127;
 		}
-		// control for cap flipper
 		else
 		{
-			motor[leftNine] = 17;
-			motor[rightNine] = 17;
 			motor[flipper] = 0;
 		}
-		// just a simple else statement :)
+		// control for the cap flipper
 	}
 }

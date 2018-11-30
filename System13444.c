@@ -1,3 +1,5 @@
+#pragma config(Sensor, dgtl8,  autoany,        sensorDigitalIn)
+#pragma config(Sensor, dgtl9,  autofour,       sensorDigitalIn)
 #pragma config(Sensor, dgtl10, autored,        sensorDigitalIn)
 #pragma config(Sensor, dgtl11, autoblue,       sensorDigitalIn)
 #pragma config(Sensor, dgtl12, autocap,        sensorDigitalIn)
@@ -69,7 +71,7 @@ void pre_auton()
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
-void cap(void)
+void blue_cap(void)
 {
 	motor(leftMotor) = 127;
 	motor(rightMotor) = 127;
@@ -79,25 +81,92 @@ void cap(void)
 	motor(rightMotor) = -75;
 	delay(300);
 	// back up somewhat to put the tines down
-	motor(leftMotor) = 100;
-	motor(rightMotor) = 100;
+	motor(leftMotor) = 80;
+	motor(rightMotor) = 80;
 	delay(1100);
 	// go forward to the cap
 	motor(leftMotor) = -80;
 	motor(rightMotor) = 80;
 	delay(450);
 	// turn somewhat to move the ball out from under the cap
-	motor(leftMotor) = 50;
-	motor(rightMotor) = -50;
+	motor(leftMotor) = 45;
+	motor(rightMotor) = -45;
 	delay(450);
 	// turn back to face the other cap
 	motor(leftMotor) = -100;
 	motor(rightMotor) = -100;
 	delay(500);
 	// back up to stop touching the cap
-	/*motor(flipper) = 127;
-	delay(1000);*/
-	// flip the other cap
+	motor(leftMotor) = 0;
+	motor(rightMotor) = 0;
+	// stop so the robot doesn't go crazy
+	delay(1000);
+  motor(flipper)=127;
+  delay(1000);
+  motor(flipper)=0;
+  // flip the second cap
+}
+void red_cap(void)
+{
+	motor(leftMotor) = 127;
+	motor(rightMotor) = 127;
+	delay(500);
+	// go forward somewhat
+	motor(leftMotor) = -75;
+	motor(rightMotor) = -75;
+	delay(300);
+	// back up somewhat to put the tines down
+	motor(leftMotor) = 80;
+	motor(rightMotor) = 80;
+	delay(1100);
+	// go forward to the cap
+	motor(leftMotor) = 80;
+	motor(rightMotor) = -80;
+	delay(450);
+	// turn somewhat to move the ball out from under the cap
+	motor(leftMotor) = -45;
+	motor(rightMotor) = 45;
+	delay(450);
+	// turn back to face the other cap
+	motor(leftMotor) = -100;
+	motor(rightMotor) = -100;
+	delay(500);
+	// back up to stop touching the cap
+	motor(leftMotor) = 0;
+	motor(rightMotor) = 0;
+	// stop so the robot doesn't go crazy
+	delay(1000);
+  motor(flipper)=127;
+  delay(1000);
+  motor(flipper)=0;
+  // flip the second cap
+}
+void any_cap(void)
+{
+	motor(leftMotor) = 127;
+	motor(rightMotor) = 127;
+	delay(500);
+	// go forward somewhat
+	motor(leftMotor) = -75;
+	motor(rightMotor) = -75;
+	delay(300);
+	// back up somewhat to put the tines down
+	motor(leftMotor) = 80;
+	motor(rightMotor) = 80;
+	delay(1100);
+	// go forward to the cap
+	motor(leftMotor) = -80;
+	motor(rightMotor) = 80;
+	delay(450);
+	// turn somewhat to move the ball out from under the cap
+	motor(leftMotor) = 45;
+	motor(rightMotor) = -45;
+	delay(450);
+	// turn back to face the other cap
+	motor(leftMotor) = -100;
+	motor(rightMotor) = -100;
+	delay(500);
+	// back up to stop touching the cap
 	motor(leftMotor) = 0;
 	motor(rightMotor) = 0;
 	// stop so the robot doesn't go crazy
@@ -140,11 +209,19 @@ task autonomous()
 
 	if(SensorValue (autocap) == 0) //needs the orange jumper cable in port 12
 	{
-		cap();
+		blue_cap();
 	}
 	if(SensorValue (autored) == 0)// needs the orange jumper cable in port 10
 	{
 		red_flag();
+	}
+	if(SensorValue (autofour) == 0)// needs the digital in port 9
+	{
+		red_cap();
+	}
+	if(SensorValue (autoany) == 0)// needs the digital in port 8
+	{
+		any_cap();
 	}
 }
 

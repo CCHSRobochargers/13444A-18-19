@@ -151,9 +151,9 @@ void any_cap(void)
 	motor(rightMotor) = -75;
 	delay(300);
 	// back up somewhat to put the tines down
-	motor(leftMotor) = 80;
-	motor(rightMotor) = 80;
-	delay(1100);
+	motor(leftMotor) = 75;
+	motor(rightMotor) = 75;
+	delay(1000);
 	// go forward to the cap
 	motor(leftMotor) = -80;
 	motor(rightMotor) = 80;
@@ -224,6 +224,7 @@ task autonomous()
 		any_cap();
 	}
 }
+
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */

@@ -202,16 +202,16 @@ void red_flag(void)
 
 task autonomous()
 {
-	if(SensorValue (autoblue) == 0) //needs the orange jumper in port 11
+	if(SensorValue (autoblue) == 0) //needs the digital in port 11
 	{
 		blue_flag();
 	}
 
-	if(SensorValue (autocap) == 0) //needs the orange jumper cable in port 12
+	if(SensorValue (autocap) == 0) //needs the digital in port 12
 	{
 		blue_cap();
 	}
-	if(SensorValue (autored) == 0)// needs the orange jumper cable in port 10
+	if(SensorValue (autored) == 0)// needs the digital in port 10
 	{
 		red_flag();
 	}

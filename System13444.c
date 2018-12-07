@@ -4,11 +4,11 @@
 #pragma config(Sensor, dgtl11, autoblue,       sensorDigitalIn)
 #pragma config(Sensor, dgtl12, autocap,        sensorDigitalIn)
 #pragma config(Motor,  port1,           leftback,      tmotorVex393_HBridge, openLoop, reversed)
-#pragma config(Motor,  port2,           rightMotor,    tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port2,           rightMotor,    tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           rightM2,       tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port4,           leftNine,      tmotorVex393_MC29, openLoop, reversed)
-#pragma config(Motor,  port5,           flipper,       tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port7,           rightNine,     tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port5,           new,           tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port6,           rightNine,     tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port8,           leftM2,        tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port9,           leftMotor,     tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port10,          rightback,     tmotorVex393_HBridge, openLoop, reversed)
@@ -101,10 +101,10 @@ void blue_cap(void)
 	motor(rightMotor) = 0;
 	// stop so the robot doesn't go crazy
 	delay(1000);
-  motor(flipper)=127;
-  delay(1000);
-  motor(flipper)=0;
-  // flip the second cap
+
+	delay(1000);
+
+	// flip the second cap
 }
 void red_cap(void)
 {
@@ -136,10 +136,10 @@ void red_cap(void)
 	motor(rightMotor) = 0;
 	// stop so the robot doesn't go crazy
 	delay(1000);
-  motor(flipper)=127;
-  delay(1000);
-  motor(flipper)=0;
-  // flip the second cap
+
+	delay(1000);
+
+	// flip the second cap
 }
 void any_cap(void)
 {
@@ -238,30 +238,15 @@ task autonomous()
 
 task usercontrol()
 {
-	bool halfspeed = false;
+	bool go = false;
+	bool backwheel = false;
 	// User control code here, inside the loop
 
 	while (true)
 	{
-		if(!halfspeed)// halfspeed is false
-		{
-			motor[leftMotor] = vexRT[Ch3];
-			motor[rightMotor] = vexRT[Ch2];
-		}
-		if(halfspeed)//halfspeed is true
-		{
-			motor[leftMotor] = vexRT[Ch3] / 2;
-			motor[rightMotor] = vexRT[Ch2] / 2;
-		}
-		if(vexRT[Btn6U] == 1)// push to turn halfspeed off (falsify)
-		{
-			halfspeed = false;
-		}
-		if(vexRT[Btn6D] == 1)// push to turn halfspeed on (truthify)
-		{
-			halfspeed = true;
-		}
-		// drivetrain control with halfspeed option
+		motor[leftMotor] = vexRT[Ch3];
+		motor[rightMotor] = vexRT[Ch2];
+		// drivetrain control
 
 		if(vexRT[Btn7U] == 1)
 		{
@@ -280,14 +265,38 @@ task usercontrol()
 		}
 		// control for the lift
 
-		if(vexRT[Btn8U] == 1)
+		if(backwheel)// backwheel is true
 		{
-			motor[flipper] = 127;
+			motor(new) = 127;
 		}
-		else
+		else if (!backwheel)// backwheel is false
 		{
-			motor[flipper] = 0;
+			motor(new) = 0;
 		}
-		// control for the cap flipper
+		if(vexRT[Btn5U] == 1)// turn backwheel off
+		{
+			backwheel = false;
+		}
+		else if(vexRT[Btn5D] == 1)// turn backwheel on
+		{
+			backwheel = true;
+		}
+		// control for the wheel flipp going forward
+		if(go)
+		{
+			backwheel =  -127;
+		}
+		else if(!go)
+		{
+			backwheel = 0;
+		}
+		if(vexRT[Btn6U] == 1)
+		{
+			go = false;
+		}
+		else if (vexRT[Btn6D] == 1)
+		{
+			go = true;
+		}
 	}
 }

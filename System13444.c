@@ -281,22 +281,24 @@ task usercontrol()
 		{
 			backwheel = true;
 		}
-		// control for the wheel flipp going forward
+		// control for the wheel flip going forward
+
 		if(go)
 		{
-			backwheel =  -127;
+			motor[new] =  -127;
 		}
 		else if(!go)
 		{
-			backwheel = 0;
+			motor[new] = 0;
 		}
-		if(vexRT[Btn6U] == 1)
+		if(vexRT[Btn6D] == 1)
 		{
 			go = false;
 		}
-		else if (vexRT[Btn6D] == 1)
+		else if (vexRT[Btn6U] == 1)
 		{
 			go = true;
 		}
+		// control for the wheel flip going backward
 	}
 }

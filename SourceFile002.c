@@ -8,7 +8,5 @@ task main()
 	{
 		motor[right] = vexRT[Ch2];
 		motor[left]= vexRT[Ch3];
-		// robot goes full speed
-
 	}
 }

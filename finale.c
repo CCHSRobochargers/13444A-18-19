@@ -116,17 +116,13 @@ void red_cap(void)
 	motor(rightF) = 80;
 	delay(1100);
 	// go forward to the cap
-	motor(leftF) = 80;
-	motor(rightF) = -80;
-	delay(450);
+	motor(leftF) = -80;
+	motor(rightF) = 80;
+	delay(600);
 	// turn somewhat to move the ball out from under the cap
-	motor(leftF) = -45;
-	motor(rightF) = 45;
+	motor(leftF) = -75;
+	motor(rightF) = -75;
 	delay(450);
-	// turn back to face the other cap
-	motor(leftF) = -100;
-	motor(rightF) = -100;
-	delay(500);
 	// back up to stop touching the cap
 	motor(leftF) = 0;
 	motor(rightF) = 0;
